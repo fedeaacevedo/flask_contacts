@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request, url_for, flash
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
@@ -21,9 +21,11 @@ def add_contact():
         phone = request.form['phone']
         email = request.form['email']
         cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO contacts (fullname, phone, email) VALUES(%s, %s, %s)', [(fullname, phone, email)])
+        cur.execute(
+                "INSERT INTO contacts (fullname, phone, email) VALUES (%s,%s,%s)", (fullname, phone, email))
         mysql.connection.commit()
-        return 'reicived'
+        flash('Contact Added successfully')
+        return redirect(url_for('index'))
 
 @app.route('/edit')
 def edit_contact():
